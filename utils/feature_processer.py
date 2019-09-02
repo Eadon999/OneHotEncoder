@@ -37,12 +37,12 @@ class FeatureProcesser:
         onehot_encoder = OneHotEncoder(sparse=False)
         integer_encoded = integer_encoded.reshape(len(integer_encoded), 1)
         onehot_encoded = onehot_encoder.fit_transform(integer_encoded)
-        map_file = open(os.path.join(destination, feature_name + '.txt'), 'w')
+        map_file = open(os.path.join(destination, feature_name + '.txt'), 'w', encoding='UTF-8')
         map_dict = {}
         for k, v in zip(source_data, onehot_encoded):
             k = k.lower()
             map_dict[k] = v.tolist()
-        map_file.write(json.dumps(map_dict))
+        map_file.write(json.dumps(map_dict, ensure_ascii=False))
 
 
 if __name__ == '__main__':
@@ -52,11 +52,13 @@ if __name__ == '__main__':
     city_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\map_data\city_level.csv'
     province_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\map_data\province_region.csv'
     time_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\map_data\time_table.csv'
-    gender = ['0', '1', '2']  # 0:男性，1：女性，2：其他
+    gender = ['0', '1', 'other']  # 0:男性，1：女性，2：其他
     brand_data = utils.csv_reader(brand_path)['brand']
     city_data = utils.csv_reader(city_path)['level']
     time_data = utils.csv_reader(time_path)['tag']
-    encoder.get_onehot_encode(brand_data, 'brand', './')
-    encoder.get_onehot_encode(city_data, 'city_level', './')
-    encoder.get_onehot_encode(time_data, 'time_table', './')
-    encoder.get_onehot_encode(gender, 'gender', './')
+    province_data = utils.csv_reader(province_path)['region']
+    # encoder.get_onehot_encode(brand_data, 'brand', './')
+    # encoder.get_onehot_encode(city_data, 'city_level', './')
+    # encoder.get_onehot_encode(time_data, 'time_table', './')
+    # encoder.get_onehot_encode(gender, 'gender', './')
+    encoder.get_onehot_encode(province_data, 'province_region', './')

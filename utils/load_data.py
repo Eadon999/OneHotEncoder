@@ -12,9 +12,14 @@ class Utils:
         return reader
 
     def txt_reader(self, path):
-        with open(path) as f:
+        with open(path, encoding='utf-8-sig') as f:
             data = f.readlines()
         return data
+
+    def get_dict(self, path):
+        lines = self.txt_reader(path)
+        map_dict = json.loads(lines[0])
+        return map_dict
 
     def csv_reader(self, path):
         df = pd.read_csv(path)
@@ -35,6 +40,6 @@ if __name__ == '__main__':
     path = ''
     chunksize = 10000
     utils = Utils()
-    provice_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\map_data\province_region.csv'
-    provice_dest = r'D:\PersonalGitProject\ClusterDataPreprocessing\map_data\province_region_map.txt'
-    utils.generate_map(provice_path, provice_dest, 'province', 'region')
+    provice_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\map_data\time_sence.csv'
+    provice_dest = r'D:\PersonalGitProject\ClusterDataPreprocessing\feature_map_dict\time_sence_map.txt'
+    utils.generate_map(provice_path, provice_dest, 'tag', 'time')
