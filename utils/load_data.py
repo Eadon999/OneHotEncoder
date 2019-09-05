@@ -22,7 +22,7 @@ class Utils:
         return map_dict
 
     def csv_reader(self, path):
-        df = pd.read_csv(path)
+        df = pd.read_csv(path, error_bad_lines=False)
         return df
 
     def generate_map(self, path, dest, col_k, col_v):
@@ -40,6 +40,12 @@ if __name__ == '__main__':
     path = ''
     chunksize = 10000
     utils = Utils()
-    provice_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\map_data\time_sence.csv'
-    provice_dest = r'D:\PersonalGitProject\ClusterDataPreprocessing\feature_map_dict\time_sence_map.txt'
-    utils.generate_map(provice_path, provice_dest, 'tag', 'time')
+    time_sence_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\original_data\time_sence.csv'
+    time_sence_dest = r'D:\PersonalGitProject\ClusterDataPreprocessing\feature_map_dict\test_time_sence_map.txt'
+    utils.generate_map(time_sence_path, time_sence_dest, 'tag', 'time')
+    city_levle_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\original_data\city_level.csv'
+    city_levle_dest = r'D:\PersonalGitProject\ClusterDataPreprocessing\feature_map_dict\test_city_level_map.txt'
+    utils.generate_map(city_levle_path, city_levle_dest, 'city', 'level')
+    provice_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\original_data\province_region.csv'
+    provice_dest = r'D:\PersonalGitProject\ClusterDataPreprocessing\feature_map_dict\test_province_region_map.txt'
+    utils.generate_map(provice_path, provice_dest, 'province', 'region')

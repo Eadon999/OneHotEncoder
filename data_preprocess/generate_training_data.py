@@ -1,5 +1,6 @@
 import os
-import numpy as np
+import time
+import random
 import pandas as pd
 from utils.load_data import Utils
 
@@ -78,14 +79,14 @@ class GenerateTrainingData:
         provi_region_onehot = self.get_dict_value(self.province_onehot_d, self.province_region.get(provi, 'other'))
         city_level_onehot = self.get_dict_value(self.city_onehot_d, self.city_level.get(city, 'other'))
         brand_onehot = self.get_dict_value(self.brand_onehot_d, brand.lower())  # 手机品牌转为小写
-        print(time_sence, gender, provi, city, brand)
-        print(time_onehot, gender_onehot, provi_region_onehot, city_level_onehot, brand_onehot)
+        # print(time_sence, gender, provi, city, brand)
+        # print(time_onehot, gender_onehot, provi_region_onehot, city_level_onehot, brand_onehot)
         sample_onehot.extend(time_onehot)
         sample_onehot.extend(gender_onehot)
         sample_onehot.extend(provi_region_onehot)
         sample_onehot.extend(city_level_onehot)
         sample_onehot.extend(brand_onehot)
-        onehot_str = ','.join([str(i) for i in sample_onehot])
+        onehot_str = ','.join([str(i) for i in sample_onehot])  # list拼接为字符串
         return onehot_str
 
     def get_dict_value(self, map_dict, key):
@@ -97,12 +98,40 @@ class GenerateTrainingData:
 
     def get_onehot_sample(self, train_data_path, save_path):
         data_df = self.reader.csv_reader(train_data_path)
+        data_df = data_df.drop_duplicates()
+        print(data_df.shape)
         save_file = open(save_path, 'w+', encoding='utf-8')
         device_id = open(save_path.replace('train', 'train_deviceID'), 'w+', encoding='utf-8')
+        samples = []
+        ids = []
+        i = 0
+        iter = 1
+        s_time = time.time()
         for index, row in data_df.iterrows():
             sample_onehor_str = self.get_feature_onehot(row)
-            # save_file.write(sample_onehor_str + '\n')
-            # device_id.write(row['device_id'] + '\n')
+            samples.append(row['device_id'] + ',' + sample_onehor_str + '\n')
+            # ids.append(row['device_id'] + '\n')
+            # 分批写入
+            i += 1
+            if i == 100000:
+                print('iter:{}, time：{}'.format(iter, time.time() - s_time))
+                s_time = time.time()
+                i = 0
+                iter += 1
+            #     save_file.writelines(samples)
+            #     device_id.writelines(ids)
+            #     samples = []
+            #     ids = []
+            # elif index + 1 == data_df.shape[0]:
+            #     print('last group len:{}'.format(len(samples)))
+            #     random.shuffle(samples)
+            #     save_file.writelines(samples)
+            # device_id.writelines(ids)
+        random.shuffle(samples)
+        save_file.writelines(samples[0:200000])
+        # device_id.writelines(ids)
+        save_file.close()
+        device_id.close()
 
 
 if __name__ == '__main__':
@@ -119,5 +148,9 @@ if __name__ == '__main__':
                       'brand_onehot': brand_onehot, 'city_onehot': city_onehot, 'time_onehot': time_onehot,
                       'gender_onehot': gender_onehot, 'province_onehot': province_onehot}
     generater = GenerateTrainingData(file_path_dict)
-    generater.get_onehot_sample(r'D:\PersonalGitProject\ClusterDataPreprocessing\map_data\original_train_data.csv',
-                                './train_onehot_data.txt')
+    generater.get_onehot_sample(
+        r'D:\PersonalGitProject\ClusterDataPreprocessing\original_data\20190830cluster_train.csv',
+        './train_data_shuffle_20W.txt')
+    # generater.get_onehot_sample(
+    #     r'D:\PersonalGitProject\ClusterDataPreprocessing\original_data\original_train_data.csv',
+    #     './test_mini_train_onehot_data.txt')

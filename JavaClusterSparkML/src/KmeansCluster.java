@@ -24,7 +24,8 @@ public class KmeansCluster {
         if (args.length > 0) {
             dataPath = args[0];
         } else {
-            dataPath = "D:\\PersonalGitProject\\ClusterDataPreprocessing\\data_preprocess\\data.txt";
+//            dataPath = "D:\\PersonalGitProject\\ClusterDataPreprocessing\\data_preprocess\\train_data_shuffle_200Thousand.txt";
+            dataPath = "D:\\PersonalGitProject\\ClusterDataPreprocessing\\data_preprocess\\train_data_shuffle_20W.txt";
         }
         training(dataPath);
     }
@@ -73,13 +74,14 @@ public class KmeansCluster {
         // Cluster the data into n classes using KMeans
         //选择10-20个类别训练
         int numClusters = 15;
-        int numIterations = 600;
-        int[] numClusterList = {8, 10, 12, 14, 16, 18, 20};
+//      iterations 800  800
+        int numIterations = 1200;
+        int[] numClusterList = {4, 6, 8, 10, 12, 14, 16, 18, 20, 25, 30};
         for (int numCluster : numClusterList) {
             //model
             System.out.println("+++++++++++++++numCluster：" + numCluster + "++++++++++++++++++");
             KMeansModel clusterModel = KMeans.train(parsedData.rdd(), numCluster, numIterations);
-            String resultFilePath = "numCluster_"+numCluster + ".txt";
+            String resultFilePath = "numCluster_" + numCluster + ".txt";
             JavaPairRDD<Integer, Vector> conuntbyk = parsedData.mapToPair(x -> {
                 int pd = clusterModel.predict(x);
                 writer(String.valueOf(pd) + ':' + x + '\n', resultFilePath, true); //预测结果写入文件

@@ -48,17 +48,17 @@ class FeatureProcesser:
 if __name__ == '__main__':
     utils = Utils()
     encoder = FeatureProcesser()
-    brand_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\map_data\brand_online.csv'
-    city_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\map_data\city_level.csv'
-    province_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\map_data\province_region.csv'
-    time_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\map_data\time_table.csv'
+    brand_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\original_data\brand_online.csv'
+    city_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\original_data\city_level.csv'
+    province_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\original_data\province_region.csv'
+    time_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\original_data\time_sence.csv'
     gender = ['0', '1', 'other']  # 0:男性，1：女性，2：其他
     brand_data = utils.csv_reader(brand_path)['brand']
     city_data = utils.csv_reader(city_path)['level']
     time_data = utils.csv_reader(time_path)['tag']
     province_data = utils.csv_reader(province_path)['region']
-    # encoder.get_onehot_encode(brand_data, 'brand', './')
-    # encoder.get_onehot_encode(city_data, 'city_level', './')
-    # encoder.get_onehot_encode(time_data, 'time_table', './')
-    # encoder.get_onehot_encode(gender, 'gender', './')
+    encoder.get_onehot_encode(brand_data, 'brand', './')
+    encoder.get_onehot_encode(city_data, 'city_level', './')
+    encoder.get_onehot_encode(time_data, 'time_table', './')
+    encoder.get_onehot_encode(gender, 'gender', './')
     encoder.get_onehot_encode(province_data, 'province_region', './')
