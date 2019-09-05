@@ -1,0 +1,1 @@
+{"wakup": 0, "lunch": 1, "rest": 2, "working": 3, "dinner": 4, "night": 5, "other": 6}

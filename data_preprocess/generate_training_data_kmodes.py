@@ -5,7 +5,11 @@ import pandas as pd
 from utils.load_data import Utils
 
 
-class GenerateTrainingData:
+class GenerateTrainingDataKmodes:
+    """
+    适用与kmode的训练数据，只是获取每个feature类别的id
+    """
+
     def __init__(self, file_path_dict):
         self.reader = Utils()
         # 特征切分数据字典路径
@@ -74,18 +78,23 @@ class GenerateTrainingData:
         provi = self.trans_empty_value(row['ip_provi'])
         city = self.trans_empty_value(row['ip_city'])
         brand = self.trans_empty_value(row['brand'])
-        time_onehot = self.get_dict_value(self.time_onehot_d, time_sence)
-        gender_onehot = self.get_dict_value(self.gender_onehot_d, gender)
-        provi_region_onehot = self.get_dict_value(self.province_onehot_d, self.province_region.get(provi, 'other'))
-        city_level_onehot = self.get_dict_value(self.city_onehot_d, self.city_level.get(city, 'other'))
-        brand_onehot = self.get_dict_value(self.brand_onehot_d, brand.lower())  # 手机品牌转为小写
+        time_id = self.get_dict_value(self.time_onehot_d, time_sence)
+        gender_id = self.get_dict_value(self.gender_onehot_d, gender)
+        provi_region_id = self.get_dict_value(self.province_onehot_d, self.province_region.get(provi, 'other'))
+        city_level_id = self.get_dict_value(self.city_onehot_d, self.city_level.get(city, 'other'))
+        brand_id = self.get_dict_value(self.brand_onehot_d, brand.lower())  # 手机品牌转为小写
+        # print(self.brand_onehot_d, brand, brand_id)
+        # print(city, city_level_id)
+        # print(gender, gender_id)
+        # print(provi, provi_region_id)
         # print(time_sence, gender, provi, city, brand)
-        # print(time_onehot, gender_onehot, provi_region_onehot, city_level_onehot, brand_onehot)
-        sample_onehot.extend(time_onehot)
-        sample_onehot.extend(gender_onehot)
-        sample_onehot.extend(provi_region_onehot)
-        sample_onehot.extend(city_level_onehot)
-        sample_onehot.extend(brand_onehot)
+        # print(time_id, gender_id, provi_region_id, city_level_id, brand_id)
+        sample_onehot.append(time_id)
+        sample_onehot.append(gender_id)
+        sample_onehot.append(provi_region_id)
+        sample_onehot.append(city_level_id)
+        sample_onehot.append(brand_id)
+
         onehot_str = ','.join([str(i) for i in sample_onehot])  # list拼接为字符串
         return onehot_str
 
@@ -100,8 +109,9 @@ class GenerateTrainingData:
         data_df = self.reader.csv_reader(train_data_path)
         data_df = data_df.drop_duplicates()
         print(data_df.shape)
+
         save_file = open(save_path, 'w+', encoding='utf-8')
-        device_id = open(save_path.replace('train', 'train_deviceID'), 'w+', encoding='utf-8')
+        # device_id = open(save_path.replace('train', 'train_deviceID'), 'w+', encoding='utf-8')
         samples = []
         ids = []
         i = 0
@@ -131,7 +141,6 @@ class GenerateTrainingData:
         save_file.writelines(samples[0:200000])
         # device_id.writelines(ids)
         save_file.close()
-        device_id.close()
 
 
 if __name__ == '__main__':
@@ -139,18 +148,18 @@ if __name__ == '__main__':
     province_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\feature_map_dict\province_region_map.txt'
     time_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\feature_map_dict\time_sence_map.txt'
     # 特征对应的one hot编码数据字典路径
-    brand_onehot = r'D:\PersonalGitProject\ClusterDataPreprocessing\onehot_data_map\brand.txt'
-    city_onehot = r'D:\PersonalGitProject\ClusterDataPreprocessing\onehot_data_map\city_level.txt'
-    time_onehot = r'D:\PersonalGitProject\ClusterDataPreprocessing\onehot_data_map\time_table.txt'
-    gender_onehot = r'D:\PersonalGitProject\ClusterDataPreprocessing\onehot_data_map\gender.txt'
-    province_onehot = r'D:\PersonalGitProject\ClusterDataPreprocessing\onehot_data_map\province_region.txt'
+    brand_onehot = r'D:\PersonalGitProject\ClusterDataPreprocessing\feature_ids\ids_brand.txt'
+    city_onehot = r'D:\PersonalGitProject\ClusterDataPreprocessing\feature_ids\ids_city_level.txt'
+    time_onehot = r'D:\PersonalGitProject\ClusterDataPreprocessing\feature_ids\ids_time_table.txt'
+    gender_onehot = r'D:\PersonalGitProject\ClusterDataPreprocessing\feature_ids\ids_gender.txt'
+    province_onehot = r'D:\PersonalGitProject\ClusterDataPreprocessing\feature_ids\ids_province_region.txt'
     file_path_dict = {'city_path': city_path, 'province_path': province_path, 'time_path': time_path,
                       'brand_onehot': brand_onehot, 'city_onehot': city_onehot, 'time_onehot': time_onehot,
                       'gender_onehot': gender_onehot, 'province_onehot': province_onehot}
-    generater = GenerateTrainingData(file_path_dict)
+    generater = GenerateTrainingDataKmodes(file_path_dict)
     generater.get_onehot_sample(
         r'D:\PersonalGitProject\ClusterDataPreprocessing\original_data\20190830cluster_train.csv',
-        './train_data_shuffle_20W.txt')
+        'D:\PersonalGitProject\ClusterDataPreprocessing\preprocessed_data/train_data_suffle_20W_kmodes.txt')
     # generater.get_onehot_sample(
     #     r'D:\PersonalGitProject\ClusterDataPreprocessing\original_data\original_train_data.csv',
-    #     './test_mini_train_onehot_data.txt')
+    #     'D:\PersonalGitProject\ClusterDataPreprocessing\preprocessed_data/test_mini_train_data_kmodes.txt')

@@ -18,6 +18,7 @@ class Utils:
 
     def get_dict(self, path):
         lines = self.txt_reader(path)
+        print(lines[0])
         map_dict = json.loads(lines[0])
         return map_dict
 

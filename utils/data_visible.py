@@ -73,7 +73,7 @@ class TsneVisable:
                 PathEffects.Stroke(linewidth=5, foreground="w"),
                 PathEffects.Normal()])
             txts.append(txt)
-        pic_name = "cluster_{}&plexity_{}_tsne_pic.png".format(str(category_num), str(preplexity))
+        pic_name = "kmodes_cluster_{}&plexity_{}_tsne_pic.png".format(str(category_num), str(preplexity))
         pic_path = os.path.join(result_root, 'category_{}'.format(str(category_num)))
         if not os.path.exists(pic_path):
             os.mkdir(pic_path)
@@ -103,14 +103,18 @@ if __name__ == '__main__':
     tnser = TsneVisable()
     cluster_num = 8
     preplexity = 40
-    test_data_num = 10000
-    cluster_num_list = [8, 10, 12, 14, 16, 18, 20]
-    tsne_path_root = r'D:\PersonalGitProject\ClusterDataPreprocessing\visable_result'
+    test_data_num = 2000
+    # cluster_num_list = [8, 10, 12, 14, 16, 18, 20, 25, 30]
+    cluster_num_list = [8, 10, 12, 14, 16, 18, 20, 22, 24, 26]
+    # tsne_path_root = r'D:\PersonalGitProject\ClusterDataPreprocessing\visualization_results\kmeans_res'
+    tsne_path_root = r'D:\PersonalGitProject\ClusterDataPreprocessing\visualization_results\kmodes_res'
     for cluster_num in cluster_num_list:
-        data_path = r'D:\PersonalGitProject\KmeansResult\Iterations600\numCluster_{}.txt'.format(cluster_num)
+        # data_path = r'D:\PersonalGitProject\KmeansResult\Iterations600\numCluster_{}.txt'.format(cluster_num)
+        data_path = r'D:\PersonalGitProject\ClusterDataPreprocessing\kmodes_trainer\results\1000_iteration\cluster_{}_kmodes_res.txt'.format(
+            cluster_num)
         X, y = tnser.extract_label_value(data_path, test_data_num)
         print('data processing finish!')
         # [10, 15, 30, 40, 45, 50, 55]
-        preplexity_list = [10, 15, 30, 40, 45, 50, 55]  # 40最优
+        preplexity_list = [5, 10, 15, 30, 40, 45, 50, 55]  # 40最优
         for preplexity in preplexity_list:
             tnser.scatter(X, y, cluster_num, preplexity, tsne_path_root)
