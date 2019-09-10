@@ -38,23 +38,31 @@ public class KmodesPredictor {
     private static HashMap<Integer, Integer[]> clusterCentroids = getClucterCentroidsMap();
 
     public static void main(String[] args) {
-        KmodesPredictor kmodes = new KmodesPredictor();
-        HashMap<String, String> userProfile = new HashMap<>();
-        userProfile.put("gender", "0");
-        userProfile.put("brand", "Huawei");
-        userProfile.put("city", "许昌");
-        userProfile.put("province", "河南");
-        userProfile.put("timeHour", "23");
-        int clusterResult = kmodes.kmodesPredictor(userProfile);
-        System.out.println("聚类结果为：" + clusterResult);
-        // 抽取用户属性特征映射id组成的向量
+        int iteration = 1;
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < iteration; i++) {
+            KmodesPredictor kmodes = new KmodesPredictor();
+            HashMap<String, String> userProfile = new HashMap<>();
+            userProfile.put("gender", "0");
+            userProfile.put("brand", "Huawei");
+            userProfile.put("city", "许昌");
+            userProfile.put("province", "河南");
+            userProfile.put("timeHour", "23");
+            int clusterResult = kmodes.kmodesPredictor(userProfile);
+            System.out.println("聚类结果为：" + clusterResult);
+            // 抽取用户属性特征映射id组成的向量
 //        Integer[] featureVec = extractUserProfile(userProfile, 5);
 //        for (int i = 0; i < featureVec.length; i++) {
 //            System.out.println("用户特征向量为：" + featureVec[i]);
 //        }
-        // 得出聚类标签
+            // 得出聚类标签
 //        int predCluster = kmodesCluster(clusterCentroids, featureVec);
 //        System.out.println("聚类结果为：" + predCluster);
+        }
+        long endTime = System.currentTimeMillis();
+        long costTime = endTime - startTime;
+        long costTimeS = costTime / 1000;
+        System.out.println("运行时间为：" + costTime + "ms " + costTimeS + "s");
     }
 
     public int kmodesPredictor(HashMap<String, String> userProfile) {
@@ -84,9 +92,9 @@ public class KmodesPredictor {
         Object cityLevelId = getMapValue(cityLevelIdRelation, (String) cityLevel);
         Object brandId = getMapValue(brandIdRelation, brand);
 
-        System.out.println("性别：" + gender + " 手机品牌：" + brand + " 城市：" + city + " 省份：" + province + " 时间：" + timeHour);
-        System.out.println("城市等级：" + cityLevel + " 省份区域：" + provinceRegion + " 时间场景：" + timeScenes);
-        System.out.println(" 时间场景Id：" + timeScenesId + "性别Id：" + genderId + " 省份区域Id：" + provinceRegionId + " 城市等级Id：" + cityLevelId + " 手机品牌Id：" + brandId);
+//        System.out.println("性别：" + gender + " 手机品牌：" + brand + " 城市：" + city + " 省份：" + province + " 时间：" + timeHour);
+//        System.out.println("城市等级：" + cityLevel + " 省份区域：" + provinceRegion + " 时间场景：" + timeScenes);
+//        System.out.println(" 时间场景Id：" + timeScenesId + "性别Id：" + genderId + " 省份区域Id：" + provinceRegionId + " 城市等级Id：" + cityLevelId + " 手机品牌Id：" + brandId);
         Integer[] featureArray = new Integer[featureNum];
 //        特征向量循序必须与训练时一致：时间、性别、省份、城市、手机品牌
         featureArray[0] = Integer.parseInt(String.valueOf(timeScenesId));
